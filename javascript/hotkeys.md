@@ -1,5 +1,5 @@
 # hotkeys
--捕获键盘输入和输入组合键，是一个强大的JavaScript库。它没有依赖。尝试按下你的键盘，下面的按钮将高亮显示
+- 捕获键盘输入和输入组合键，是一个强大的JavaScript库。它没有依赖。尝试按下你的键盘，下面的按钮将高亮显示
 ## 用法
 ```html
 <script type="text/javascript" src="hotkeys.js"></script>

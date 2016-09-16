@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		
+	</style>
+</head>
+<body>
+	<canvas width="800" height="800" id="drawing">
+		canvas 
+	</canvas>
+
+	<script type="text/javascript">
+		var drawing = document.getElementById('drawing');
+		if(drawing.getContext){
+		   /* var context = drawing.getContext('2d');
+		    context.strokeStyle = 'gray';
+		    context.fillStyle = 'red';
+		    context.fillRect(10,10,50,50);
+			context.strokeRect(30,30,50,50);
+			context.clearRect(40,40,10,10);*/
+			var context = drawing.getContext('2d');
+			context.strokeStyle = 'gray';
+		    context.fillStyle = 'red';
+
+			//开始路径
+			context.beginPath();
+			//绘制外圆
+			context.arc(100,100,99,0,2 * Math.PI,false);
+			//绘制内圆
+			context.moveTo(194,100);
+			context.arc(100,100,94,0,2 * Math.PI,false);
+
+			//绘制时针
+			context.moveTo(100,100);
+			context.lineTo(100,15);
+
+			//绘制分针
+			context.moveTo(100,100);
+			context.lineTo(35,100);
+
+			//描边路径
+			context.stroke();
+
+			context.font = "bold 14px Arial";
+			context.textAlign = "center";
+			context.textBaseline = "middle";
+			context.fillText("12",100,20);
+
+			//起点对齐
+			context.textAlign = "start";
+			context.fillText("12",80,40);
+
+			//终点对齐
+			context.textAlign = "end";
+			context.fillText("12",80,60);
+
+		    console.log(context.strokeStyle);
+		}
+
+	</script>
+</body>
+</html>

@@ -614,3 +614,140 @@ request.onsuccess = function(event){
 - 大小：5-50M
 - 如果超过这个用额，请求用户允许。
 - firefox 不允许本地文件访问IndexedDB,chrome没有限制。
+
+## 步骤
+- 第一步：openDatabase方法：创建一个访问数据库的对象。
+- 第二步：使用第一步创建的数据库访问对象来执行transaction方法，通过此方法可以设置一个开启事务成功的事件响应方法，在事件响应方法中可以执行SQL.
+- 第三步：通过executeSql方法执行查询，当然查询可以是：CRUD。
+
+```javascript
+//Demo：获取或者创建一个数据库，如果数据库不存在那么创建之
+var dataBase = openDatabase("student", "1.0", "学生表", 1024 * 1024, function () { });
+```
+
+
+```javascript
+ts.executeSql(sqlQuery,[value1,value2..],dataHandler,errorHandler)
+```
+
+```html
+function initDatabase() {
+    var db = getCurrentDb();//初始化数据库
+    if(!db) {alert("您的浏览器不支持HTML5本地数据库");return;}
+    db.transaction(function (trans) {//启动一个事务，并设置回调函数
+        //执行创建表的Sql脚本
+        trans.executeSql("create table if not exists Demo(uName text null,title text null,words text null)", [], function (trans, result) {
+        }, function (trans, message) {//消息的回调函数alert(message);});
+    }, function (trans, result) {
+    }, function (trans, message) {
+    });
+}
+$(function () {//页面加载完成后绑定页面按钮的点击事件
+    initDatabase();
+    $("#btnSave").click(function () {
+        var txtName = $("#txtName").val();
+        var txtTitle = $("#txtTitle").val();
+        var txtWords = $("#txtWords").val();
+        var db = getCurrentDb();
+        //执行sql脚本，插入数据
+        db.transaction(function (trans) {
+            trans.executeSql("insert into Demo(uName,title,words) values(?,?,?) ", [txtName, txtTitle, txtWords], function (ts, data) {
+            }, function (ts, message) {
+                alert(message);
+            });
+        });
+        showAllTheData();
+    });
+});
+function getCurrentDb() {
+    //打开数据库，或者直接连接数据库参数：数据库名称，版本，概述，大小
+    //如果数据库不存在那么创建之
+    var db = openDatabase("myDb", "1.0", "it's to save demo data!", 1024 * 1024); ;
+    return db;
+}
+//显示所有数据库中的数据到页面上去
+function showAllTheData() {
+    $("#tblData").empty();
+    var db = getCurrentDb();
+    db.transaction(function (trans) {
+        trans.executeSql("select * from Demo ", [], function (ts, data) {
+            if (data) {
+                for (var i = 0; i < data.rows.length; i++) {
+                    appendDataToTable(data.rows.item(i));//获取某行数据的json对象
+                }
+            }
+        }, function (ts, message) {alert(message);var tst = message;});
+    });
+}
+function appendDataToTable(data) {//将数据展示到表格里面
+    //uName,title,words
+    var txtName = data.uName;
+    var txtTitle = data.title;
+    var words = data.words;
+    var strHtml = "";
+    strHtml += "<tr>";
+    strHtml += "<td>"+txtName+"</td>";
+    strHtml += "<td>" + txtTitle + "</td>";
+    strHtml += "<td>" + words + "</td>";
+    strHtml += "</tr>";
+    $("#tblData").append(strHtml);
+}
+```
+
+
+```javascript
+openDatabase(DbName,DBVersion,DBDescribe,DBSize,Callback());
+```
+
+
+```javascript
+var db;//全局变量
+//创建数据库
+function createDB(){
+    //参数：数据库名称，版本号，数据库描述，大小（单位字节），回调函数
+    db=openDatabase('Student','1.0','StuManage',2*1024*1024,function(){
+    $$("result").innerHTML="成功创建数据库";
+});
+var sql="create table if not exists student"+"(sno unique,name text,sex text,score int)";
+db.transaction(
+        function(tx){
+           //执行创建表语句
+            tx.executeSql(sql);
+        },
+        function(){ 
+           //调用函数
+            Status_Handle("事务执行出错");
+        },
+        function(){
+            Status_Handle("事务执行成功");
+        })
+}
+```
+
+```html
+var sql="select * from student where sno<>?";
+var sno="这里是输入的学号";
+if(sno!=null){
+    sql="select * from student where sno=?"
+}
+db.transaction(
+    function(tx){
+        tx.executeSql(sql,[sno],function(tx,rs){
+            for（var i=0;i
+                var name=rs.rows.item(i).name;
+            }
+        }
+    }
+);
+
+```
+
+
+```javascript
+var dataBase = openDatabase("student", "1.0", "学生表", 1024 * 1024, function (){ });
+if (!dataBase) {
+    alert("数据库创建失败！");
+} else {
+    alert("数据库创建成功！");
+}
+``

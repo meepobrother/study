@@ -3,9 +3,11 @@
 ## JavaScript的特点在于，要学习它的语法入门简简单，但是要精通使用它的方式却是一件不容易的事。
 ```javascript
 //在你的Chrome浏览器的控制台中输入这段代码，你会发现不同HTML层都被使用不同的颜色添加了一个高亮的边框
+
 [].forEach.call($$("*"),function(a){
   a.style.outline="1px solid #"+(~~(Math.random()*(1<<24))).toString(16)
 })
+
 ```
 
 ## 选择页面中所有的元素

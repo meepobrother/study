@@ -34,10 +34,11 @@ class Nav{
 }
 
 /*创建导航项目*/
-function createNav(title,action){
+function createNav(title,action,active){
 	var o = new Nav();
 	o.title = title;
 	o.action = action;
+	o.active = active ? true : false;
 	return o;
 }
 
@@ -51,7 +52,6 @@ class Navbar{
 	constructor(id,socket){
 		this.ele = $('#'+id);
 		this.socket = socket;
-		this.socket.emit('gameTpl');
 	}
 	init(){
 		var html = this.bindDom();
@@ -63,12 +63,18 @@ class Navbar{
 	bindDom(){
 		var html = "<div class='dropdown'>";
 		for(var i = 0,len=this.navs.length;i<len;i++){
-			if(i == 0){
+			var nav = this.navs[i];
+			if(nav.active){
+				console.log(nav.action);
+				this.socket.emit(nav.action);
+				this.socket.on(nav.action,function(html){
+					console.log('收到:'+nav.action);
+					app.container.html(html);
+				});
 				html += "<a data-action='"+this.navs[i].action+"' class='logo active' href='javascript:;'>"+this.navs[i].title+"</a>";
 			}else{
 				html += "<a data-action='"+this.navs[i].action+"' class='logo' href='javascript:;'>"+this.navs[i].title+"</a>";
 			}
-			
 		}
 		html += "</div>";
 		return html;
@@ -95,7 +101,11 @@ class Navbar{
 			});
 		}
 		a_logo.click(activeALogo);
-		a_logo.hover(activeALogo);
+		a_logo.hover(function(){
+			var that = $(this);
+			a_logo.removeClass('active');
+			that.addClass('active');
+		});
 	}
 	/*添加导航项目*/
 	addNav(nav){
@@ -121,9 +131,19 @@ function init(){
 
 	var navbar = new Navbar('navbar',socket);
 
-	var navbarItems = [{title:'游戏',action:'gameTpl'},{title:'比赛',action:'batingTpl'},{title:'博客',action:'blogTpl'},{title:'论坛',action:'bbsTpl'},{title:'我的',action:'homeTpl'}];
+	var navbarItems = [
+		{title:'首页',action:'indexTpl',active:true},
+		{title:'游戏',action:'gameTpl'},
+		{title:'商城',action:'shopTpl'},
+		{title:'比赛',action:'batingTpl'},
+		{title:'博客',action:'blogTpl'},
+		{title:'论坛',action:'bbsTpl'},
+		{title:'应用',action:'cloudTpl'},
+		{title:'我的',action:'homeTpl'},
+	];
+	
 	for(var i=0,len=navbarItems.length;i<len;i++){
-		var nav = createNav(navbarItems[i].title,navbarItems[i].action);
+		var nav = createNav(navbarItems[i].title,navbarItems[i].action,navbarItems[i].active || false);
 		navbar.addNav(nav);
 	}
 	navbar.init();

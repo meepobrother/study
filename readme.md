@@ -18,5 +18,11 @@ col2| col2|col2
 
 [link](http://note.youdao.com/)
 
-![image](http://note.youdao.com/favicon.ico)
+---
+图片地址
+---
+
+```
+![image](图片地址)
+```
 
